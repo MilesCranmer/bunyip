@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import glob
 import numpy as np
 
@@ -7,16 +5,10 @@ import bifrost as bf
 import bifrost.pipeline as bfp
 import bifrost.blocks as blocks
 import bifrost.views as views
-import bifrost.guppi_raw as guppi_raw
-import bifrost.sigproc as sigproc
-from bifrost.DataType import DataType
-
-from datetime import datetime
-import time
 
 from copy import deepcopy
 
-import h5py
+import blocks as byip
 
 def timeit(method):
     """ Decorator for timing execution of a method in a class """
@@ -143,7 +135,7 @@ with bfp.Pipeline() as pipeline:
     # Flatten channel/freq axis to form output spectra and accumulate
     b_copp    = blocks.copy(b_copp, space='system', buffer_nframe=4)
     b_flat    = views.merge_axes(b_copp, 'channel', 'freq', label='freq')
-    b_acc     = AccumulateBlock(b_flat, n_int, core=4, buffer_nframe=4)
+    b_acc     = byip.accumulate(b_flat, n_int, core=4, buffer_nframe=4)
     #blocks.print_header(b_acc)
-    b_hdf     = HdfWriteBlock(b_acc, shape=[n_t, n_chan, n_pol], dtype='float32', core=5)
+    b_hdf     = byip.hdf_writer(b_acc, shape=[n_t, n_chan, n_pol], dtype='float32', core=5)
     pipeline.run()
