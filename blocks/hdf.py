@@ -37,5 +37,5 @@ class HdfWriteBlock(bfp.SinkBlock):
         self.data[self.idx] = ispan.data
         self.idx += 1
 
-def hdf_writer(iring, shape, dtype, file_ext='.hdf', *args, **kwargs):
-    return HdfWriteBlock(iring, shape, dtype, file_ext='.hdf', *args, **kwargs)
+def hdf_writer(iring, shape, dtype, file_ext='h5', *args, **kwargs):
+    return HdfWriteBlock(iring, shape, dtype, file_ext=file_ext, *args, **kwargs)
